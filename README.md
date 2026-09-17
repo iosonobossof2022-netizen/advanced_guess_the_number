@@ -10,13 +10,24 @@ a gues the number game but advanced and a bit different
 ## de reden:
 ik was tim aan het helpen en ik dacht wat nou als ik een veel ingewikkeldere maak
 
-## uitbrijding 
+## uitbreiding 
 voor nu zal het dus een gewoon terminal guess the number zijn maar ik ben vanplan om het uit te breiden met minigames en sound effects en natuurlijk een mooie web pagina mischien voeg ik ook een inlog systeem toe maar dat weet ik nog niet
 
 ## randvoorwaarden
-dit programma is niet schadelijk
+dit programma is niet schadelijk 
 
 ## begin-eind datum
-begin 10-09-2026
+begin 11-09-2026
 einde 18-09-2026
+
+## leerdoelen 
+leren om complexe systemen te maken
+
+# motiverende quote
+beter een lelijke maar werkende dan een schone code die niet werkt (hij kan later toch wel opgeschoond worden)
+
+## werkprocessen
+B1-K1-W3    Realiseert (onderdelen van) software
+B1-K1-W4    Test software
+
 
