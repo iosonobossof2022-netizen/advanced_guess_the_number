@@ -24,7 +24,7 @@ def user_guess(variables):
 
     while not variables["user_num"].isdigit() or int(variables["user_num"]) < 1 or int(variables["user_num"]) > variables["max_number"]:
         print("Invalid input. Please enter a number.")
-        variables["user_num"] = input(f"Enter your guess (1-{variables['max_number']}: ")
+        variables["user_num"] = input(f"Enter your guess (1-{variables['max_number']}): ")
 
     variables["user_num"] = int(variables["user_num"])
 
