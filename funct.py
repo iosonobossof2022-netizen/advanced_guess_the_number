@@ -1,105 +1,114 @@
 import random
 
-guess_coin = 0
-user_num = None
-guess_price = 1
-difficulty = 1
 dificulties = {1 : 5, 2 : 10, 3 : 25, 4 : 50, 5 : 100}
-guesses = 3
-max_number = dificulties[difficulty]
-pc_num = 0
+rewards = {1 : 1, 2 : 2, 3 : 5, 4 : 10, 5 : 25}
+variables = {
+    "guess_coin" : 0,
+    "user_num" : None,
+    "guess_price" : 1,
+    "difficulty" : 1,
+    "guesses" : 3,
+    "pc_num" : 0,
+    "play_again" : None,
+    "guessed" : False,
+    }
+variables["guess_reward"] = rewards[variables["difficulty"]]
+variables["max_number"] = dificulties[variables["difficulty"]]
 
-def pc_numf(max_number, pc_num):
-    pc_num = random.randint(1, max_number)
-    return pc_num
 
-def user_guess(user_num, max_number):
-    user_num = input(f"Enter your guess (1-{max_number}): ")
+def pc_numf(variables):
+    variables["pc_num"] = random.randint(1, variables["max_number"])
 
-    while not user_num.isdigit() or int(user_num) < 1 or int(user_num) > max_number:
+def user_guess(variables):
+    variables["user_num"] = input(f"Enter your guess (1-{variables['max_number']}): ")
+
+    while not variables["user_num"].isdigit() or int(variables["user_num"]) < 1 or int(variables["user_num"]) > variables["max_number"]:
         print("Invalid input. Please enter a number.")
-        user_num = input(f"Enter your guess (1-{max_number}): ")
+        variables["user_num"] = input(f"Enter your guess (1-{variables['max_number']}: ")
 
-    user_num = int(user_num)
-    return user_num
+    variables["user_num"] = int(variables["user_num"])
 
-def buy_more_guesses(guess_coin, guess_price, guesses):
+def buy_more_guesses(variables):
     while True:
-        buy_more = input("Would you like to buy more guesses? (y/n): ")
-        if buy_more.lower() == "y":
-            if guess_coin >= guess_price:
-                guess_coin -= guess_price
-                guess_price += 1
-                guesses += 1
-                print(f"You have {guess_coin} guess coins left.")
-                return guess_coin, guess_price, guesses
+        variables["buy_more"] = input(f"Would you like to buy more guesses for {variables['guess_price']} guess coins? (y/n): ")
+        if variables["buy_more"].lower() == "y":
+            if variables["guess_coin"] >= variables["guess_price"]:
+                variables["guess_coin"] -= variables["guess_price"]
+                variables["guess_price"] += 1
+                variables["guesses"] += 1
+                print(f"You have {variables['guess_coin']} guess coins left.")
+                return
             else:
-                print("You don't have enough guess coins to buy more guesses!")
+                print(f"You don't have enough guess coins to buy more guesses!, The correct number was {variables['pc_num']}.")
                 exit("Game over.")
-        elif buy_more.lower() == "n":
-            print("Game over.")
-            return guess_coin, guess_price, guesses
+        elif variables["buy_more"].lower() == "n":
+            print(f"Game over. The correct number was {variables['pc_num']}.")
+            return
         else:
             print("Invalid choice. Please enter 'y' or 'n'.")
 
 
-def check_guess(user_num, pc_num, difficulty, guesses, max_number, guess_coin, guess_price):
-    if guesses >= 1:
-        if user_num != pc_num:
-            guesses -= 1
-            if guesses > 0:
+def check_guess(variables):
+    if variables["guesses"] >= 1:
+        if variables["user_num"] != variables["pc_num"]:
+            variables["guesses"] -= 1
+            if variables["guesses"] > 0:
                 print("Sorry, that's not the correct number. Try again.")
-            return difficulty, guesses, max_number, guess_coin, guess_price, False
+            else:
+                print(f"Sorry, you've used all your attempts.")
+                print(f"You have {variables['guess_coin']} guess coins")
+            return False
 
         else:
-            print(f"Congratulations! You've guessed the number {pc_num}")
-            difficulty += 1
-            max_number = dificulties[difficulty]
-            guess_coin += 1
-            return difficulty, guesses, max_number, guess_coin, guess_price, True
+            print(f"Congratulations! You've guessed the number {variables['pc_num']}")
+            variables["difficulty"] = min(variables["difficulty"] + 1, max(dificulties))
+            variables["max_number"] = dificulties[variables["difficulty"]]
+            variables["guess_coin"] += variables["guess_reward"]
+            print(f"You've advanced to level {variables['difficulty']}. The new range is 1-{variables['max_number']}.")
+            print(f"You have {variables['guess_coin']} guess coins")
+            return True
 
-    elif guesses == 0:
-        print(f"Sorry, you've used all your attempts. The correct number was {pc_num}.")
-        print(f"You have {guess_coin} guess coins")
-        guess_coin, guess_price, guesses = buy_more_guesses(guess_coin, guess_price, guesses)
+    elif variables["guesses"] == 0:
+        print(f"Sorry, you've used all your attempts.")
+        print(f"You have {variables['guess_coin']} guess coins")
 
-        return difficulty, guesses, max_number, guess_coin, guess_price, False
+        return False
     else:
         print("something went wrong")
         exit("error")
 
 
-def play_again(guesses, guess_coin):
+def play_again(variables):
     while True:
-        play_again = input("Would you like to play again? (y/n): ")
-        if play_again == "y" or play_again == "Y":
-            guesses = 1
-            guess_coin = 0
-            return True, guesses, guess_coin
-        elif play_again == "n" or play_again == "N":
+        variables["play_again"] = input("Would you like to play again? (y/n): ")
+        if variables["play_again"] == "y" or variables["play_again"] == "Y":
+            variables["guesses"] = 3
+            return True
+        elif variables["play_again"] == "n" or variables["play_again"] == "N":
             print("Thanks for playing!")
             exit()
         else:
             print("Invalid choice. Please enter 'y' or 'n'.")
 
-def game(pc_num, user_num, difficulty, guesses, max_number, guess_coin, guess_price):
-    pc_num = pc_numf(max_number, pc_num)
+def game(variables):
+    pc_numf(variables)
 
     while True:
-        if guesses == 0:
-            difficulty, guesses, max_number, guess_coin, guess_price, guessed = check_guess(
-                user_num, pc_num, difficulty, guesses, max_number, guess_coin, guess_price
-            )
-            if guesses == 0:
-                break
+        user_guess(variables)
+        variables["guessed"] = check_guess(variables)
 
-        user_num = user_guess(user_num, max_number)
+        if variables["guessed"]:
+            if play_again(variables):
+                variables["guess_reward"] = rewards[variables["difficulty"]]
+                pc_numf(variables)
+                continue
 
-        difficulty, guesses, max_number, guess_coin, guess_price, guessed = check_guess(
-            user_num, pc_num, difficulty, guesses, max_number, guess_coin, guess_price
-        )
+        if variables["guesses"] == 0:
+            buy_more_guesses(variables)
+            if variables["guesses"] > 0:
+                continue
 
-        if guessed:
-            break
-            
-    play_again(guesses, guess_coin)
+            if play_again(variables):
+                variables["guess_reward"] = rewards[variables["difficulty"]]
+                pc_numf(variables)
+                continue
